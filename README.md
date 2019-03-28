@@ -1,6 +1,34 @@
 # Bisonc++
 > minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip
 
+## Nyelvtanírás alapjai
+- A kezdőszimbólum neve `start`
+- A *terminálisok (tokenek) nagybetűsek*, a *nemterminálisok kisbetűsek*.
+- A szabály bal- és jobb oldalát `:` választja el egymástól
+- Az alternatívák között `|` szerepel.
+- A szabályalternatívák sorozatát `;` zárja le.
+- `C++` stílusú meg jegyzések írhatók a szabályokhoz.
+- Az ε-t üres szabályjobb oldal valósítja meg, a gyakorlatban egy `//ures` megjegyzést szokás írni helyette.
+- A jobb oldalak után `{` és `}` között `C++` kód írható, ami mindannyiszor végrehajtó dik, amikor az adott szabályt az elemző használja.
+Ezekszerint: 
+*S -> aC|C
+C -> ε|bC*
+nyelvtannak ez feletethető meg:
+````Lex
+start:
+A c
+|
+	c
+;
+
+c:
+	//ures
+|
+	B c
+;
+````
+
+
 ## 1
 
 ### Opciók
