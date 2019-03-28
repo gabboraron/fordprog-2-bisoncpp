@@ -11,13 +11,15 @@
 - Az ε-t üres szabályjobb oldal valósítja meg, a gyakorlatban egy `//ures` megjegyzést szokás írni helyette.
 - A jobb oldalak után `{` és `}` között `C++` kód írható, ami mindannyiszor végrehajtó dik, amikor az adott szabályt az elemző használja.
 Ezekszerint: 
+
 *S -> aC|C*
 
 *C -> ε|bC*
+
 nyelvtannak ez feletethető meg:
 ````Lex
 start:
-A c
+	A c
 |
 	c
 ;
