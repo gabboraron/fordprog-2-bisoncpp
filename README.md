@@ -11,8 +11,9 @@
 - Az ε-t üres szabályjobb oldal valósítja meg, a gyakorlatban egy `//ures` megjegyzést szokás írni helyette.
 - A jobb oldalak után `{` és `}` között `C++` kód írható, ami mindannyiszor végrehajtó dik, amikor az adott szabályt az elemző használja.
 Ezekszerint: 
-*S -> aC|C
-C -> ε|bC*
+*S -> aC|C*
+
+*C -> ε|bC*
 nyelvtannak ez feletethető meg:
 ````Lex
 start:
@@ -20,7 +21,9 @@ A c
 |
 	c
 ;
+````
 
+````Lex
 c:
 	//ures
 |
@@ -243,3 +246,13 @@ inline void Parser::exceptionHandler__(std::exception const &exc)
 - `./lista jo.txt`
 - `./lista hibas.txt`
 Fordíthatunk ehelyett a `make` parancssal is, a `Makefile`t használva.
+
+
+## 2
+Az előzőhöz képest `jo.txt` és `hibas.txt` fájlok alapján kitalálható, hogy milyen nyelvet szeretnénk elemezni.
+A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüzenetet adni szintaktikus hiba esetén illetve ilyen esetben is tovább folytatni az elemzést.
+
+- A Flex forrásfájlban az `yylineno` opció segítségével gondoskodunk róla, hogy a lexikális elemző számlálja a sorokat.
+- A `Parser.ih` fájlban a `lex` függvényben a `lineno` metódussal kérjük el a lexikális elemzőtől az aktuális sorszámot, és ezt a `Parser` osztály `d_loc__` adattagjának egyik mezőjébe mentjük el.
+- A `Parser.ih` fájlban definiált `error` függvényt úgy módosítjuk, hogy felhasználja ezt a helyinformációt.
+- Az `fl.y` fájl nyelvtani szabályait kibővítjük úgy, hogy használja a speciális error nemterminális szimbólumot. Ha az elemző szintaktikus hibát észlel, akkor megpróbálja illeszteni az `error`-t tartalmazó hibaalternatívákat. Vigyázni kell arra, hogy mindig egy jól meghatározott terminális zárja le ezeket a hibaalternatívákat, különben könnyen konfliktusokat okoznak a nyelvtanban.
