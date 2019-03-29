@@ -265,10 +265,30 @@ Fordíthatunk ehelyett a `make` parancssal is, a `Makefile`t használva.
 
 
 ## 2
-Az előzőhöz képest `jo.txt` és `hibas.txt` fájlok alapján kitalálható, hogy milyen nyelvet szeretnénk elemezni.
+Az előzőhöz képest `2/jo.txt` és `2/hibas.txt` fájlok alapján kitalálható, hogy milyen nyelvet szeretnénk elemezni.
 A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüzenetet adni szintaktikus hiba esetén illetve ilyen esetben is tovább folytatni az elemzést.
 
 - A Flex forrásfájlban az `yylineno` opció segítségével gondoskodunk róla, hogy a lexikális elemző számlálja a sorokat.
 - A `Parser.ih` fájlban a `lex` függvényben a `lineno` metódussal kérjük el a lexikális elemzőtől az aktuális sorszámot, és ezt a `Parser` osztály `d_loc__` adattagjának egyik mezőjébe mentjük el.
 - A `Parser.ih` fájlban definiált `error` függvényt úgy módosítjuk, hogy felhasználja ezt a helyinformációt.
 - Az `fl.y` fájl nyelvtani szabályait kibővítjük úgy, hogy használja a speciális error nemterminális szimbólumot. Ha az elemző szintaktikus hibát észlel, akkor megpróbálja illeszteni az `error`-t tartalmazó hibaalternatívákat. Vigyázni kell arra, hogy mindig egy jól meghatározott terminális zárja le ezeket a hibaalternatívákat, különben könnyen konfliktusokat okoznak a nyelvtanban.
+
+-----
+
+> __példa:__ `char betuje( string s, int index );`
+
+> __Azaz a szabály__: 
+
+ 	*S -> deklaraciolista*
+ 	*deklaraciolista -> ε|deklaracio deklaraciolista*
+ 	*deklaracio -> AZONOSITO AZONOSITO parameterek PONTOSVESSZO*
+ 	*parameterek -> NYITO lista CSUKO*
+ 	*lista -> ε|AZONOSITO AZONOSITO folytatas*
+ 	*folytatas -> ε|VESSZO AZONOSITO AZONOSITO folytatas*
+ 	*BETU -> [a-zA-Z]*
+	*SZAMJEGY -> [0-9]*
+ 	*AZONOSITO -> BETU BETU|BETU SZAMJEGY|"_"*
+ 	*VESSZO -> ","*
+	*NYITO -> "("*
+	*CSUKO -> ")"*
+	*PONTOSVESSZO -> ";"*
