@@ -48,19 +48,15 @@ A tokentípusokat a `%token` direktíva segítségével definiáljuk. A nyelvtan
 
 > __példa:__ `[ alma, barack, 42, szilva ]`
 
-> __Azaz a szabály__: 
+__Azaz a szabály__: 
 
-> 	*S -> NYITÓ lista CSUKÓ*
-
-> 	*lista -> ε|ELEM folytatás*
-
-> 	*folytatás -> ε|VESSZŐ ELEM folytatás*
-
-
-
-
+ 	*S -> NYITÓ lista CSUKÓ*
+ 	*lista -> ε|ELEM folytatás*
+ 	*folytatás -> ε|VESSZŐ ELEM folytatás*
 
 fájl: `1/lista.y`
+
+
 ````Yacc
 %baseclass-preinclude <iostream>
 
@@ -87,7 +83,7 @@ folytatas:
 ---
 
 ### Hozzá tartozó Flex
-Ez egy `Flex` forrásfájl, melyről részletes leírás itt található: http://deva.web.elte.hu/fordprog/flex-help.pdf A szintaktikus elemzés számára fontos részletek a következők:
+Ez egy __`Flex` forrásfájl__, melyről részletes leírás itt található: http://deva.web.elte.hu/fordprog/flex-help.pdf A szintaktikus elemzés számára fontos részletek a következők:
 
 `#include "Parserbase.h"`
 Ezt a fejállományt a `Bisonc++` fogja generálni. Beillsztésével láthatóvá tesszük a `lista.y` fájlban megadott tokeneket
@@ -96,6 +92,7 @@ Ezt a fejállományt a `Bisonc++` fogja generálni. Beillsztésével láthatóv�
 Az egyes reguláris kifejezések sikeres illesztésekor a lexikális elemző vissza fog térni a megfelelő tokennel.
 
 fájl: `1/lsita.l`
+
 ````Lex
 %option noyywrap c++
 
@@ -126,8 +123,10 @@ WS      [ \t\n]
 ---
 
 ### Hozzá tartozó C++
-Ez a `C++` forrás tartalmazza a `main` függvényt,amelyben ellenőrizzük a paranancssori argumentum meglétét és megpróbáljuk megnyitni a megadott fájlt. Ha ez sikeres, akkor ezzel az inputtal létrehozunk egy szintaktikus elemző objektumot(`pars`), melynek `parse()` metódusával indítjuk el az elemzést.
+Ez a __`C++` forrás__ tartalmazza a `main` függvényt,amelyben ellenőrizzük a paranancssori argumentum meglétét és megpróbáljuk megnyitni a megadott fájlt. Ha ez sikeres, akkor ezzel az inputtal létrehozunk egy szintaktikus elemző objektumot(`pars`), melynek `parse()` metódusával indítjuk el az elemzést.
+
 fájl: `1/lista.cc`
+
 ```C++
 #include <iostream>
 #include <fstream>
@@ -166,6 +165,7 @@ int main( int argc, char* argv[] )
 
 ### Parser.h
 Ez a fejállomány definiálja a `Parser` osztályt. Ahhoz, hogy a szintaktikus elemző együtt tudjon működni a lexikális elemzővel, `include`-oljuk a `FlexLexer.h` fejállományt, felvesszük a lexikális elemzőt a Parser osztály adattagjai közé (`lexer`), és hozzáadunk az osztályhoz egy konstruktort, ami a kap ott bemeneti adatfolyammal inicializálja a `lexer`t. (Ezt a konstruktort hívtuk meg a `main` függvényben.)
+
 fájl: `1/Parser.h`
 
 ````C++
@@ -209,7 +209,7 @@ class Parser: public ParserBase
 ````
 
 ### Parser.ih
-Ebben az implementációs fejállományban az error tagfüggvény átírásával szabhatjuk testre a hibaüzeneteket. Ez a fejállomány definiálja továbbá a `Parser` osztály `lex()` függvényét: Valahányszora szintaktikus elemzőnek szüksége van a szöveg következő tokenjére, ezt a függvényt hívja meg. Ebben a példában ennek a függvénynek összesen annyi a teendője, hogy meghívja a `Parser` osztály adattag jai közé felvett lexikális elemző objektum `yylex()` metódusát,és a kapott eredményt adja vissza. Ez az eredmény az, amit a `Flex` forrásfájlban látható `return` utasítások adnak.
+Ebben az __implementációs fejállományban__ az error tagfüggvény átírásával szabhatjuk testre a hibaüzeneteket. Ez a fejállomány definiálja továbbá a `Parser` osztály `lex()` függvényét: Valahányszora szintaktikus elemzőnek szüksége van a szöveg következő tokenjére, ezt a függvényt hívja meg. Ebben a példában ennek a függvénynek összesen annyi a teendője, hogy meghívja a `Parser` osztály adattag jai közé felvett lexikális elemző objektum `yylex()` metódusát,és a kapott eredményt adja vissza. Ez az eredmény az, amit a `Flex` forrásfájlban látható `return` utasítások adnak.
 
 fájl: `1/Parser.ih`
 
@@ -277,7 +277,7 @@ A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüz
 
 > __példa:__ `char betuje( string s, int index );`
 
-> __Azaz a szabály__: 
+__Azaz a szabály__: 
 
  	*S -> deklaraciolista*
  	*deklaraciolista -> ε|deklaracio deklaraciolista*
@@ -285,10 +285,79 @@ A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüz
  	*parameterek -> NYITO lista CSUKO*
  	*lista -> ε|AZONOSITO AZONOSITO folytatas*
  	*folytatas -> ε|VESSZO AZONOSITO AZONOSITO folytatas*
- 	*BETU -> [a-zA-Z]*
-	*SZAMJEGY -> [0-9]*
  	*AZONOSITO -> BETU BETU|BETU SZAMJEGY|"_"*
  	*VESSZO -> ","*
 	*NYITO -> "("*
 	*CSUKO -> ")"*
 	*PONTOSVESSZO -> ";"*
+	*BETU -> [a-zA-Z]*
+	*SZAMJEGY -> [0-9]*
+
+Tehát a __terminálisok azaz a `%token`ek__ az `AZONOSITO`, `NYITO`, `CSUKO`, `VESSZO`, `PONTOSVESSZO`. Ezek kellenek a `.y` fájlba a *"nyilak"* jobb oldalára. A `BETU` és a `SZAMJEGY` ezek felépítéséhez kell, így azok a Flex, `.l` fájlban szerepelnek `makrók`ként.
+
+Ezek alapján a `.y` fájlunk, az opciókkal így néz ki:
+fájl: `2/fv.y`
+
+````YACC
+%baseclass-preinclude <iostream>
+%token AZONOSITO NYITO CSUKO VESSZO PONTOSVESSZO
+%%
+
+start:
+	deklaracioLista
+;
+
+deklaracioLista:
+	// ures
+|
+	deklaracio deklaracioLista
+;
+
+deklaracio:
+	AZONOSITO AZONOSITO parameterek PONTOSVESSZO
+;
+
+parameterek:
+	NYITO lista CSUKO
+;
+
+lista:
+	// ures
+|
+	AZONOSITO AZONOSITO folytatas
+;
+
+folytatas:
+	// ures
+|
+	VESSZO AZONOSITO AZONOSITO folytatas
+;
+````
+Az ehhez tartozó Lex ahol a szabályok "értelmezése" van:
+fájl: `2/fv.l`
+
+````LEX
+%{
+#include "Parserbase.h"
+%}
+
+BETU		[a-zA-Z]
+SZAMJEGY	[0-9]
+WS		[ \t\n]
+
+%%
+
+{BETU}({BETU}|{SZAMJEGY}|"_")*	return Parser::AZONOSITO;
+","				return Parser::VESSZO;
+"("				return Parser::NYITO;
+")"				return Parser::CSUKO;
+";"				return Parser::PONTOSVESSZO;
+
+{WS}+	// feher szokozok: semmi teendo
+
+. {
+	std::cerr << "lexikalis hiba" << std::endl;
+	return 0;
+}
+````
+Ezek után a hozzá tartozó `C++` (`2/fv.cc`) fájlban ahogy az előbb is, ellenőrizzük a parancssori argumentumokat, és továbbadjuk őket a lexikális elemzőnek, az igazi munkát innen az __implementációs fejállomány__ (`2/Parser.ih`) végzi, innen tudja a szintaktikus elemző, hogy mi a szöveg következő tokenjével a teendője. Jelenleg elég azt "visszaköpni" így elég a `yylex()` függvényt meghívni.
