@@ -266,14 +266,6 @@ Fordíthatunk ehelyett a `make` parancssal is, a `Makefile`t használva.
 
 ## 2
 Az előzőhöz képest `2/jo.txt` és `2/hibas.txt` fájlok alapján kitalálható, hogy milyen nyelvet szeretnénk elemezni.
-A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüzenetet adni szintaktikus hiba esetén illetve ilyen esetben is tovább folytatni az elemzést.
-
-- A Flex forrásfájlban az `yylineno` opció segítségével gondoskodunk róla, hogy a lexikális elemző számlálja a sorokat.
-- A `Parser.ih` fájlban a `lex` függvényben a `lineno` metódussal kérjük el a lexikális elemzőtől az aktuális sorszámot, és ezt a `Parser` osztály `d_loc__` adattagjának egyik mezőjébe mentjük el.
-- A `Parser.ih` fájlban definiált `error` függvényt úgy módosítjuk, hogy felhasználja ezt a helyinformációt.
-- Az `fl.y` fájl nyelvtani szabályait kibővítjük úgy, hogy használja a speciális error nemterminális szimbólumot. Ha az elemző szintaktikus hibát észlel, akkor megpróbálja illeszteni az `error`-t tartalmazó hibaalternatívákat. Vigyázni kell arra, hogy mindig egy jól meghatározott terminális zárja le ezeket a hibaalternatívákat, különben könnyen konfliktusokat okoznak a nyelvtanban.
-
------
 
 > __példa:__ `char betuje( string s, int index );`
 
@@ -334,6 +326,7 @@ folytatas:
 ;
 ````
 Az ehhez tartozó Lex ahol a szabályok "értelmezése" van:
+
 fájl: `2/fv.l`
 
 ````LEX
@@ -361,3 +354,13 @@ WS		[ \t\n]
 }
 ````
 Ezek után a hozzá tartozó `C++` (`2/fv.cc`) fájlban ahogy az előbb is, ellenőrizzük a parancssori argumentumokat, és továbbadjuk őket a lexikális elemzőnek, az igazi munkát innen az __implementációs fejállomány__ (`2/Parser.ih`) végzi, innen tudja a szintaktikus elemző, hogy mi a szöveg következő tokenjével a teendője. Jelenleg elég azt "visszaköpni" így elég a `yylex()` függvényt meghívni.
+
+----
+### Hibakezelés
+
+A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüzenetet adni szintaktikus hiba esetén illetve ilyen esetben is tovább folytatni az elemzést.
+
+- A Flex forrásfájlban az `yylineno` opció segítségével gondoskodunk róla, hogy a lexikális elemző számlálja a sorokat.
+- A `Parser.ih` fájlban a `lex` függvényben a `lineno` metódussal kérjük el a lexikális elemzőtől az aktuális sorszámot, és ezt a `Parser` osztály `d_loc__` adattagjának egyik mezőjébe mentjük el.
+- A `Parser.ih` fájlban definiált `error` függvényt úgy módosítjuk, hogy felhasználja ezt a helyinformációt.
+- Az `fl.y` fájl nyelvtani szabályait kibővítjük úgy, hogy használja a speciális error nemterminális szimbólumot. Ha az elemző szintaktikus hibát észlel, akkor megpróbálja illeszteni az `error`-t tartalmazó hibaalternatívákat. Vigyázni kell arra, hogy mindig egy jól meghatározott terminális zárja le ezeket a hibaalternatívákat, különben könnyen konfliktusokat okoznak a nyelvtanban.
