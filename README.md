@@ -45,10 +45,15 @@ A generálandó osztályhierearchia ősosztályába beilleszti az iostream fej-�
 A tokentípusokat a `%token` direktíva segítségével definiáljuk. A nyelvtan terminálisai az itt felsorolt négy elem, melyekből a `Bisonc++` az általa generálandó `Parser` osztályba egy felsorolási típust fog létrehozni.
 
 > A nyelvtan egy zárójelbe tett, vesszővel elválasztott elemekből álló lista szintaxisát adja meg.
+
 > __példa:__ `[ alma, barack, 42, szilva ]`
+
 > __Azaz a szabály__: 
+
 > 	*S -> NYITÓ lista CSUKÓ*
+
 > 	*lista -> ε|ELEM folytatás*
+
 > 	*folytatás -> ε|VESSZŐ ELEM folytatás*
 
 
