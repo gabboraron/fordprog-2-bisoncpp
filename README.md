@@ -1,5 +1,6 @@
 # Bisonc++
-> minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip
+> eredeti minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip
+> ez csak egy átdolgozása ennek a dokumentumnak: http://deva.web.elte.hu/fordprog/bisoncpp-tutorial.pdf
 
 ## Nyelvtanírás alapjai
 - A kezdőszimbólum neve `start`
@@ -159,7 +160,7 @@ int main( int argc, char* argv[] )
 ### Fordítás 1
 - `cd 1`
 - `flex lista.l`
-- `bisoncic++ lista.y`
+- `bisonc++ lista.y`
 - ekkkor keletkezik: `Parserbase.h`,`Parser.ih`,`Parser.h`,`parse.cc`
 - a `Parser.ih`,`Parser.h` nem kerül felülírásra legközelbb, így futtatható
 
@@ -364,3 +365,80 @@ A `2-hibakezeles` könyvtár tartalma azt mutatja meg, hogyan lehet jobb hibaüz
 - A `Parser.ih` fájlban a `lex` függvényben a `lineno` metódussal kérjük el a lexikális elemzőtől az aktuális sorszámot, és ezt a `Parser` osztály `d_loc__` adattagjának egyik mezőjébe mentjük el.
 - A `Parser.ih` fájlban definiált `error` függvényt úgy módosítjuk, hogy felhasználja ezt a helyinformációt.
 - Az `fl.y` fájl nyelvtani szabályait kibővítjük úgy, hogy használja a speciális error nemterminális szimbólumot. Ha az elemző szintaktikus hibát észlel, akkor megpróbálja illeszteni az `error`-t tartalmazó hibaalternatívákat. Vigyázni kell arra, hogy mindig egy jól meghatározott terminális zárja le ezeket a hibaalternatívákat, különben könnyen konfliktusokat okoznak a nyelvtanban.
+
+## 3
+Ez a példa a `begin` és `end` kulcsszavakkal __körbezárt blokkokból__ és `skip` kulcsszavakból álló nyelvet elemzi. Az üres fájl helyes, valamint `skip`-ek és blokkok tetszőleges sorozata is helyes. Egy blokkban szintén tetszőleges `skip` illetve blokk sorozat lehet, az üres blokkok is megngedettek. Éredemes ezt a példát a `jo.txt`-ben adott példa alapján gyakorlásként megoldani.
+
+> __példa:__ 
+`skip
+begin
+	skip
+	skip
+	begin
+	end
+	skip
+end
+begin
+	begin
+	end
+end`
+
+__Azaz a szabály__: 
+
+ 	*S -> program*
+ 	*program -> ε|SKIP program|blokk program*
+ 	*blokk -> KEZDET program VEG*
+ 	
+	*SKIP -> "skip"*
+ 	*KEZDET -> "begin"*
+ 	*VEG -> "end"*
+	
+Ahogy az előbb, itt is, a szabályok első fele a `3/blokk.y` fájl része, a második a `3/blokk.l` fájl része. A többi nem kell érdekes dolgot végezzen, csak kiír, és ennyi.
+
+## 4
+
+Ez a példa a nulladrendű logikai formulákat képes elemezni. A formulák logikai literálokból, változókból és logikai összekeötő jelekből (negáció, konjunkció, 4 diszjunkció, implikáció, ekvivalancia) állnak. A nyelvtan nagyon egyszerű, a formulák megadása a következő sémát követi:
+```YACC
+formula:
+IGAZ
+...
+formula VAGY formula
+|
+formula ES formula
+;
+```
+
+__Ez a nyelvtan azonban nem egyértelmű!__ Példáu a `true & true & true`, vagy a `true & true | true` formulákhoz több különböző szintaxisfa is rajzolható. Ezek közül a helyes fát a logikai összekötő jelek bal- illetve jobbasszociativitása és a rájuk vonatkozó precedenciaszabályok határozzák meg. Ezeket az információkat a `Bisonc++` forrás(`4/logika.y`) elején adjuk meg a következő formában:
+````C++
+%right           EKV
+%right           IMPL
+%left            VAGY
+%left            ES
+%right           NEM
+````
+Ahol a `%right` és `%left` direktívák a __jobb- illetve balasszociativitást szabályozzák__, míg __a sorrend a precedenciát adja meg__ növekvő sorrendben. Ezt a technikát a beadandóban szereplő aritmetikai és logikai operátorok esetén is érdemes alkalmazni.
+
+> __példa:__ 
+fájl: `4/jo.txt`: 
+`a & b <-> !(a -> !b)`
+
+__Azaz a szabály__: 
+
+ 	*S -> formula*
+ 	*formula -> IGAZ|HAMIS|AZONOSITO|NYITO formula CSUKO|fomrula EKV formula|formula IMPL formula|formula VAGY formula|formula ES formula|NEM formula*
+ 	
+	*IGAZ -> "true"*
+ 	*HAMIS -> "false"*
+ 	*NYITO -> "("*
+	*CSUKO -> ")"*
+	*ES -> &"*
+	*VAGY -> "|"*
+	*NEM -> "!"*
+	*IMPL -> "->"*
+	*EKV -> "<->"*
+	*NYITO -> "("*
+	*AZONOSITO -> BETU BETU|BETU SZAMJEGY
+	
+	*BETU -> [a-zA-Z]*
+	*SZAMJEGY -> [0-9]*
+Ahol mint eddig is, a szabályok első fele a `4/logika.y` fájlban találhatóak, a második fele a Flex fájl *reguláris kifejezések* részében, a `4/logika.l` míg a harmadik fele ugyanazon fájl *makrók*részében található.
