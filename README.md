@@ -1,5 +1,5 @@
 # Bisonc++
-> eredeti minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip
+> eredeti minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip ,
 > ez csak egy átdolgozása ennek a dokumentumnak: http://deva.web.elte.hu/fordprog/bisoncpp-tutorial.pdf
 
 ## Nyelvtanírás alapjai
@@ -272,19 +272,19 @@ Az előzőhöz képest `2/jo.txt` és `2/hibas.txt` fájlok alapján kitalálhat
 
 __Azaz a szabály__: 
 
- 	*S -> deklaraciolista*
- 	*deklaraciolista -> ε|deklaracio deklaraciolista*
- 	*deklaracio -> AZONOSITO AZONOSITO parameterek PONTOSVESSZO*
- 	*parameterek -> NYITO lista CSUKO*
- 	*lista -> ε|AZONOSITO AZONOSITO folytatas*
- 	*folytatas -> ε|VESSZO AZONOSITO AZONOSITO folytatas*
- 	*AZONOSITO -> BETU BETU|BETU SZAMJEGY|"_"*
- 	*VESSZO -> ","*
-	*NYITO -> "("*
-	*CSUKO -> ")"*
-	*PONTOSVESSZO -> ";"*
-	*BETU -> [a-zA-Z]*
-	*SZAMJEGY -> [0-9]*
+ 	S -> deklaraciolista
+ 	deklaraciolista -> ε|deklaracio deklaraciolista
+ 	deklaracio -> AZONOSITO AZONOSITO parameterek PONTOSVESSZO
+ 	parameterek -> NYITO lista CSUKO
+ 	lista -> ε|AZONOSITO AZONOSITO folytatas
+ 	folytatas -> ε|VESSZO AZONOSITO AZONOSITO folytatas
+ 	AZONOSITO -> BETU BETU|BETU SZAMJEGY|"_"
+ 	VESSZO -> ","
+	NYITO -> "("
+	CSUKO -> ")"
+	PONTOSVESSZO -> ";"
+	BETU -> [a-zA-Z]
+	SZAMJEGY -> [0-9]
 
 Tehát a __terminálisok azaz a `%token`ek__ az `AZONOSITO`, `NYITO`, `CSUKO`, `VESSZO`, `PONTOSVESSZO`. Ezek kellenek a `.y` fájlba a *"nyilak"* jobb oldalára. A `BETU` és a `SZAMJEGY` ezek felépítéséhez kell, így azok a Flex, `.l` fájlban szerepelnek `makrók`ként.
 
@@ -385,13 +385,13 @@ end`
 
 __Azaz a szabály__: 
 
- 	*S -> program*
- 	*program -> ε|SKIP program|blokk program*
- 	*blokk -> KEZDET program VEG*
+ 	S -> program
+ 	program -> ε|SKIP program|blokk program
+ 	blokk -> KEZDET program VEG
  	
-	*SKIP -> "skip"*
- 	*KEZDET -> "begin"*
- 	*VEG -> "end"*
+	SKIP -> "skip"
+ 	KEZDET -> "begin"
+ 	VEG -> "end"
 	
 Ahogy az előbb, itt is, a szabályok első fele a `3/blokk.y` fájl része, a második a `3/blokk.l` fájl része. A többi nem kell érdekes dolgot végezzen, csak kiír, és ennyi.
 
@@ -424,21 +424,21 @@ fájl: `4/jo.txt`:
 
 __Azaz a szabály__: 
 
- 	*S -> formula*
- 	*formula -> IGAZ|HAMIS|AZONOSITO|NYITO formula CSUKO|fomrula EKV formula|formula IMPL formula|formula VAGY formula|formula ES formula|NEM formula*
+ 	S -> formula*
+ 	formula -> IGAZ|HAMIS|AZONOSITO|NYITO formula CSUKO|fomrula EKV formula|formula IMPL formula|formula VAGY formula|formula ES formula|NEM formula*
  	
-	*IGAZ -> "true"*
- 	*HAMIS -> "false"*
- 	*NYITO -> "("*
-	*CSUKO -> ")"*
-	*ES -> &"*
-	*VAGY -> "|"*
-	*NEM -> "!"*
-	*IMPL -> "->"*
-	*EKV -> "<->"*
-	*NYITO -> "("*
-	*AZONOSITO -> BETU BETU|BETU SZAMJEGY
+	IGAZ -> "true"
+ 	HAMIS -> "false"
+ 	NYITO -> "("
+	CSUKO -> ")"
+	ES -> "&"
+	VAGY -> "|"
+	NEM -> "!"
+	IMPL -> "->"
+	EKV -> "<->"
+	NYITO -> "("
+	AZONOSITO -> BETU BETU|BETU SZAMJEGY
 	
-	*BETU -> [a-zA-Z]*
-	*SZAMJEGY -> [0-9]*
-Ahol mint eddig is, a szabályok első fele a `4/logika.y` fájlban találhatóak, a második fele a Flex fájl *reguláris kifejezések* részében, a `4/logika.l` míg a harmadik fele ugyanazon fájl *makrók*részében található.
+	BETU -> [a-zA-Z]
+	SZAMJEGY -> [0-9]
+Ahol mint eddig is, a szabályok első fele a `4/logika.y` fájlban találhatóak, a második fele a Flex fájl *reguláris kifejezések* részében, a `4/logika.l` fájl, míg a harmadik fele ugyanazon fájl *makrók*részében található.
