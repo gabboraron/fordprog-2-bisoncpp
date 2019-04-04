@@ -465,17 +465,18 @@ Ajánlott a flex (`.l`) fájl egyszerűsítéséhez: http://westes.github.io/fle
 
 ### Reduce/Reduce Conflicts
 > __Oka:__ A nyelvtanban több féle úton is ugyanazt a terminálist kaphatjuk.
-Pl:
-````Yacc
-sequence:
-  %empty         { printf ("empty sequence\n"); }
-| maybeword
-| sequence word  { printf ("added word %s\n", $2); }
-;
+> Pl:
+> ````Yacc
+> sequence:
+>   %empty         { printf ("empty sequence\n"); }
+> | maybeword
+> | sequence word  { printf ("added word %s\n", $2); }
+> ;
+> 
+> maybeword:
+>   %empty    { printf ("empty maybeword\n"); }
+> | word      { printf ("single word %s\n", $1); }
+> ;
+> ````
 
-maybeword:
-  %empty    { printf ("empty maybeword\n"); }
-| word      { printf ("single word %s\n", $1); }
-;
-````
 > __Megoldás:__ Nem szabad megengednünk, hogy ugyanahhoz a terminálishoz több úton elérjünk, inkább nagyobb merítésű legyen a minta, kicsit általánosabb. Bővebben: http://www.gnu.org/software/bison/manual/html_node/Reduce_002fReduce.html#Reduce_002fReduce vagy további furcsa, hasonló esetek: http://www.gnu.org/software/bison/manual/html_node/Mysterious-Conflicts.html#Mysterious-Conflicts
