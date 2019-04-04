@@ -443,3 +443,39 @@ __Azaz a szabály__:
 	BETU -> [a-zA-Z]
 	SZAMJEGY -> [0-9]
 Ahol mint eddig is, a szabályok első fele a `4/logika.y` fájlban találhatóak, a második fele a Flex fájl *reguláris kifejezések* részében, a `4/logika.l` fájl, míg a harmadik fele ugyanazon fájl *makrók*részében található.
+
+## Hibaüzenetek, errorok
+### warning, rule cannot be matched
+> __Oka:__ Ha van minta ami korábban tud illeszkedni akkor azt veszi figyelembe, például kulcsszavak előtt van a váltózónevének mintaillesztett, bármilyen karaktert elkapó minta a lex fájlban.
+
+> __Megoldás:__ Kulcsszavakat előre kel lsrolni, mident ami "konkrét" és nem "bármire" illeszkedik az hamarabb kell jöjjön. Bővebben: https://stackoverflow.com/questions/15057399/getting-warning-rule-cannot-be-matched
+
+Ajánlott a flex (`.l`) fájl egyszerűsítéséhez: http://westes.github.io/flex/manual/Performance.html
+
+### Shift/Reduce Conflicts
+> __Oka:__ A nyelvtanban (`.y`) van olyan minta ami hamarabb tud illeszkedni mint a későbbi, ami viszont így helytelen.
+> Pl:
+> ````YACC
+> if_stmt:
+>  "if" expr "then" stmt
+> | "if" expr "then" stmt "else" stmt
+> ;```
+
+> __Megoldás:__  Cseréljük fel a minták sorrendjét. Bővebben: http://www.gnu.org/software/bison/manual/html_node/Shift_002fReduce.html
+
+### Reduce/Reduce Conflicts
+> __Oka:__ A nyelvtanban több féle úton is ugyanazt a terminálist kaphatjuk.
+Pl:
+````Yacc
+sequence:
+  %empty         { printf ("empty sequence\n"); }
+| maybeword
+| sequence word  { printf ("added word %s\n", $2); }
+;
+
+maybeword:
+  %empty    { printf ("empty maybeword\n"); }
+| word      { printf ("single word %s\n", $1); }
+;
+````
+> __Megoldás:__ Nem szabad megengednünk, hogy ugyanahhoz a terminálishoz több úton elérjünk, inkább nagyobb merítésű legyen a minta, kicsit általánosabb. Bővebben: http://www.gnu.org/software/bison/manual/html_node/Reduce_002fReduce.html#Reduce_002fReduce vagy további furcsa, hasonló esetek: http://www.gnu.org/software/bison/manual/html_node/Mysterious-Conflicts.html#Mysterious-Conflicts
