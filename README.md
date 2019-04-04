@@ -52,9 +52,9 @@ A tokentípusokat a `%token` direktíva segítségével definiáljuk. A nyelvtan
 
 __Azaz a szabály__: 
 
- 	*S -> NYITÓ lista CSUKÓ*
- 	*lista -> ε|ELEM folytatás*
- 	*folytatás -> ε|VESSZŐ ELEM folytatás*
+ 	S -> NYITÓ lista CSUKÓ
+ 	lista -> ε|ELEM folytatás
+ 	folytatás -> ε|VESSZŐ ELEM folytatás
 
 fájl: `1/lista.y`
 
