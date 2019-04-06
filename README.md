@@ -1,7 +1,11 @@
 # Bisonc++
 > eredeti minta fájlok: http://deva.web.elte.hu/fordprog/bisonc++.zip ,
+>
 > ez csak egy átdolgozása ennek a dokumentumnak: http://deva.web.elte.hu/fordprog/bisoncpp-tutorial.pdf
+>
 > még egy jegyzet: http://alumni.cs.ucr.edu/~lgao/teaching/bison.html
+>
+> és még egy: https://www.progtools.org/compilers/tutorials/cxx_and_bison/cxx_and_bison.html
 
 ## Nyelvtanírás alapjai
 - A kezdőszimbólum neve `start`
